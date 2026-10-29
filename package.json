@@ -1,0 +1,21 @@
+{
+  "name": "paranoid-engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bash scripts/test.sh"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.31.1",
+    "@solana/spl-token": "0.4.14",
+    "@solana/web3.js": "1.98.4",
+    "circomlib": "2.0.5",
+    "circomlibjs": "0.1.7",
+    "snarkjs": "0.7.6"
+  },
+  "devDependencies": {
+    "@types/node": "24.7.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
