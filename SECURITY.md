@@ -13,7 +13,7 @@ public issue. Include the instruction or circuit constraint involved and, if you
 | Party | Trusted for | Not trusted for |
 | --- | --- | --- |
 | Upgrade authority | Program upgrades, and the $PARANOID payment premium within 50% either way | Moving payments, stakes or order escrows: none of its instructions can |
-| Gateway | Serving the questions it was paid for | Knowing who asked: it sees proofs and questions, never which member sent them. No instruction gives it any power over the program's accounts |
+| Gateway | Serving the questions it was paid for, and refusing a ticket's second use | Knowing which member asked: it sees proofs and the questions themselves, never which member sent them. Without the IP shield or a proxy it also sees the sender's address and timing, which is why the app relays questions and the connector sends each one on a connection of its own. No instruction gives it any power over the program's accounts |
 | Groth16 setup | Soundness: a broken setup could forge proofs, which means free questions | Privacy: Groth16 is zero-knowledge for any setup, so even a broken one cannot reveal who asked |
 | Pyth SOL/USD | Pricing $PARANOID payments and `convert_burn` | Stale or unverified prices: every read checks the account owner, the feed id, full verification and an age of at most 60 seconds, and refuses a price whose confidence band is wider than 2% of it |
 | Meteora DAMM v2 pool | The venue for the buyback, and the token's price for token payments | Being pushed first: see "Why moving the pool does not pay" |

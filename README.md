@@ -25,13 +25,14 @@ the circuit every question is proven with, and their tests. The app and the gate
   up to the base unit and that the SDK's tree equals the chain's root. Further suites cover the circuit,
   the program lifecycle, token payments, orders and staking. CI runs the Rust tests and the circuit suite on
   every push, and `scripts/test.sh` runs all of them, local validator included.
-- **A request proof verifies on Solana in 174,478 compute units**, measured by the bench program in `bench/`
-  with the `alt_bn128` syscalls (one 882-byte transaction). A tampered proof is rejected.
+- **A request proof can be verified on Solana in 174,478 compute units**, measured by the bench program in
+  `bench/` with the `alt_bn128` syscalls (one 882-byte transaction), and a tampered proof is rejected. The live
+  service verifies proofs at the gateway, off chain, which answers in milliseconds and costs nothing per
+  question; the bench shows the same check runs on chain whenever it needs to.
 - **The trusted setup is on record.** The Hermez phase 1, two phase 2 contributions made on the operator's
   machine, and a drand beacon (round 6578018) committed to before it was drawn, with transcripts and hashes in
-  [`CEREMONY.md`](CEREMONY.md) and `build/ceremony/`. The setup bears only on forging free questions; it has
-  no bearing on who asked. The
-  proving key and witness generator here are the same files the app downloads.
+  [`CEREMONY.md`](CEREMONY.md) and `build/ceremony/`. The setup bears only on forging free questions, never on
+  who asked, and anyone can add a phase 2 contribution on top of it as CEREMONY.md describes.
 - **Clippy is clean** with `cargo clippy --all-targets -- -D warnings`.
 
 ```bash

@@ -241,9 +241,11 @@ export type BookResult =
   | { status: "double"; secret: bigint; nullifier: bigint };
 
 /**
- * A gateway's record of spent tickets. Tickets never come back, so the book is never pruned. It must
- * be checked and written in one step per request (one process, or one atomic store) or two
- * concurrent requests could both pass.
+ * A gateway's record of spent tickets, in memory: the reference for what the book must decide. Tickets
+ * never come back, so the book is never pruned. It must be checked and written in one step per request
+ * (one process, or one atomic store) or two concurrent requests could both pass, and a gateway must keep
+ * it across restarts: the live gateway appends every spent ticket to a file on its volume before it
+ * answers and reloads that file when it starts, and publishes the list at /api/v1/used.
  */
 export class NullifierBook {
   private readonly seen = new Map<bigint, Share>();
