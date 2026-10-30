@@ -101,7 +101,7 @@ export function buildTree(hash: Hash, members: MemberView[]): MemberTree {
 
 /**
  * Members a request made on day `epoch` hides among: everyone whose tickets are still valid that day.
- * A client should not send when this is small; the app shows it next to the send button.
+ * A client that wants a minimum crowd can check this before it sends.
  */
 export function anonymitySet(members: MemberView[], epoch: number): number {
   return members.filter((m) => m.status === "active" && m.startEpoch <= epoch && epoch <= m.endEpoch).length;

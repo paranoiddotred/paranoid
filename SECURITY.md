@@ -19,6 +19,17 @@ public issue. Include the instruction or circuit constraint involved and, if you
 | Meteora DAMM v2 pool | The venue for the buyback, and the token's price for token payments | Being pushed first: see "Why moving the pool does not pay" |
 | USDC (Circle) | Not freezing the program's token accounts | |
 
+## What the proofs hide, and what they do not
+
+- **Which member asked.** A proof shows that the sender holds the secret of some active member, never which
+  one. The crowd a question hides in is every member whose questions are valid that day, so it grows with
+  every purchase. Anyone can count it from the chain with `anonymitySet()` in `sdk/chain.ts`.
+- **Not the network address.** The gateway receives each request over the internet, so it sees the address it
+  came from unless something sits in between. The app sends questions through its IP shield (an OHTTP relay
+  that sees the address but not the question), and the connector can be routed through Tor or a VPN.
+- **Not who bought.** A purchase is a Solana payment, so it shows which wallet bought a membership. It never
+  shows which questions that membership asks.
+
 ## What each check defends against
 
 **Payments**
@@ -101,5 +112,6 @@ own use of the pool small, so the push costs more than it can win.
 
 - `cargo clippy --all-targets -- -D warnings`: clean.
 - `bash scripts/test.sh`: 45 passed, 0 failed, none skipped (12 Rust unit and property tests, 33 Node tests on
-  the circuit and on a local validator, including the 120-step solvency fuzz).
+  the circuit and on a local validator, including the 120-step solvency fuzz). CI runs the Rust tests and the
+  circuit suite on every push; the local validator suites run with `scripts/test.sh`.
 - `scripts/build.sh` reproduces the deployed program byte for byte (README, "What you can check yourself").

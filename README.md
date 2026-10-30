@@ -1,9 +1,11 @@
 # PARANOID
 
-PARANOID lets people ask AI models questions without the service learning who asked. A member buys a
-pack of questions once, in USDC or in $PARANOID, and then sends every question with a fresh
+PARANOID lets people ask AI models questions without the service learning which member asked. A member
+buys a pack of questions once, in USDC or in $PARANOID, and then sends every question with a fresh
 zero-knowledge proof that it was paid for. The gateway checks the proof and forwards the question, but the
-proof does not say which member sent it, and two questions from the same member cannot be tied together.
+proof does not say which member sent it, and two questions from the same member cannot be tied together
+through their proofs. Keeping the sender's network address apart is a separate layer, handled by the app's IP
+shield or by Tor or a VPN, and [`SECURITY.md`](SECURITY.md) explains both.
 
 This repository is the on-chain part: the Solana program that sells questions and keeps the member list,
 the circuit every question is proven with, and their tests. The app and the gateway run at
@@ -17,15 +19,18 @@ the circuit every question is proven with, and their tests. The app and the gate
   `9JJqzEoDGkTE8CMLATRw7CqFhcyWVegfhFuEeGfBfVGm` on mainnet. The commands are below.
 - **Privacy rests on math, not on a key.** Groth16 is zero-knowledge for any setup, so even a broken trusted
   setup could at worst forge free questions. It could never reveal who asked.
-- **45 tests, none skipped.** Rust unit and property tests check that every Merkle edit equals a full
-  recomputation and that the price math matches a 128-bit reference. On a local validator, a 120-step random
+- **45 tests, none skipped.** Rust unit and property tests check that every Merkle edit (insert, slash and
+  top up) equals a full recomputation and that the price math matches a 128-bit reference. On a local validator, a 120-step random
   fuzz of purchases, top-ups, slashes and sweeps checks after every step that each vault and each wallet adds
   up to the base unit and that the SDK's tree equals the chain's root. Further suites cover the circuit,
-  the program lifecycle, token payments, orders and staking.
+  the program lifecycle, token payments, orders and staking. CI runs the Rust tests and the circuit suite on
+  every push, and `scripts/test.sh` runs all of them, local validator included.
 - **A request proof verifies on Solana in 174,478 compute units**, measured by the bench program in `bench/`
   with the `alt_bn128` syscalls (one 882-byte transaction). A tampered proof is rejected.
-- **The trusted setup is on record.** The Hermez phase 1, two phase 2 contributions and a drand beacon
-  (round 6578018), with transcripts and hashes in [`CEREMONY.md`](CEREMONY.md) and `build/ceremony/`. The
+- **The trusted setup is on record.** The Hermez phase 1, two phase 2 contributions made on the operator's
+  machine, and a drand beacon (round 6578018) committed to before it was drawn, with transcripts and hashes in
+  [`CEREMONY.md`](CEREMONY.md) and `build/ceremony/`. The setup bears only on forging free questions; it has
+  no bearing on who asked. The
   proving key and witness generator here are the same files the app downloads.
 - **Clippy is clean** with `cargo clippy --all-targets -- -D warnings`.
 

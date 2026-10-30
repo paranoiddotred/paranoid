@@ -162,13 +162,14 @@ mod tests {
 
     proptest! {
         #![proptest_config(ProptestConfig::with_cases(24))]
-        /// Any mix of inserts and removals leaves the same root as recomputing the tree.
+        /// Any mix of inserts, removals (slash) and replacements by a new leaf (top up) leaves the same root as
+        /// recomputing the tree.
         #[test]
-        fn edits_match_recomputation(ops in proptest::collection::vec((any::<bool>(), any::<u16>()), 1..40)) {
+        fn edits_match_recomputation(ops in proptest::collection::vec((0u8..3, any::<u16>()), 1..40)) {
             let mut t = fresh();
             let mut leaves = BTreeMap::new();
-            for (n, (insert, pick)) in ops.into_iter().enumerate() {
-                if insert || leaves.is_empty() {
+            for (n, (op, pick)) in ops.into_iter().enumerate() {
+                if op == 0 || leaves.is_empty() {
                     let leaf = field_u32(1_000 + n as u32);
                     let index = t.insert(leaf).unwrap();
                     leaves.insert(index, leaf);
@@ -176,9 +177,10 @@ mod tests {
                     let keys: Vec<u32> = leaves.keys().copied().collect();
                     let index = keys[pick as usize % keys.len()];
                     let (_, path) = reference(&leaves, &t.zeros, index);
-                    let root = t.replace(index, leaves[&index], &path, [0u8; 32]).unwrap();
+                    let next = if op == 1 { [0u8; 32] } else { field_u32(100_000 + n as u32) };
+                    let root = t.replace(index, leaves[&index], &path, next).unwrap();
                     t.push_root(root);
-                    leaves.remove(&index);
+                    if op == 1 { leaves.remove(&index); } else { leaves.insert(index, next); }
                 }
                 let (expected, _) = reference(&leaves, &t.zeros, 0);
                 prop_assert_eq!(t.root(), expected);
