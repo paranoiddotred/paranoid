@@ -141,6 +141,11 @@ program, which is how a change like this repository's next version would reach m
 Not audited by a third party yet. [SECURITY.md](SECURITY.md) explains what each check defends against, why
 moving the pool does not pay, and how to report a problem privately.
 
+The program on mainnet is a verified build of this repository: OtterSec rebuilt it and matched the on-chain
+bytes ([status](https://verify.osec.io/status/9JJqzEoDGkTE8CMLATRw7CqFhcyWVegfhFuEeGfBfVGm)). The request circuit
+is proven fully constrained by Veridise's Picus, and Trail of Bits' circomspect reports no bug in it
+([CIRCUIT_CHECK.md](CIRCUIT_CHECK.md)).
+
 ## License
 
 [MIT](LICENSE)
